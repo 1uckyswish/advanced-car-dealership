@@ -1,5 +1,7 @@
 package com.yearup.dealership;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -50,6 +52,7 @@ public class UserInterface {
             System.out.println("7. Get all vehicles");
             System.out.println("8. Add vehicle");
             System.out.println("9. Remove vehicle");
+            System.out.println("10. Sell or Lease a vehicle");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
 
@@ -85,6 +88,9 @@ public class UserInterface {
                     break;
                 case "9":
                     processRemoveVehicleRequest(scanner);
+                    break;
+                case "10":
+                  processRecordOfSaleOrLease(scanner);
                     break;
                 case "0":
                     exit = true;
@@ -286,6 +292,125 @@ public class UserInterface {
         // Pass the ArrayList to the helper method
         displayVehicles(vehicles);
     }
+
+    public void processRecordOfSaleOrLease(Scanner scanner){
+        System.out.println("\nPlease choose an option: Sell or Lease a vehicle");
+        System.out.println("1. Sell");
+        System.out.println("2. Lease");
+        System.out.println("Else. Go Home");
+        // Ask user what option they want.
+        System.out.print("Enter your choice: ");
+        String option = scanner.nextLine().trim();
+        switch(option){
+            case "1": sellVehicle(scanner);break;
+            case "2": leaseVehicle(scanner);break;
+            default:
+                System.out.println("\n\nReturning back home....\n\n");
+                display();break;
+        }
+    }
+
+    public void sellVehicle(Scanner scanner) {
+        //Make a new object to get the save contract method
+        ContractDataManager contractDataManager = new ContractDataManager();
+        boolean foundVehicle = false;
+        Vehicle vehicleSold = null;
+        while (!foundVehicle) {
+            int searchedVin = validateIntInput(scanner, "Please provide the (VIN) for the vehicle you are selling: ");
+            scanner.nextLine(); // Consume newline character
+            for (Vehicle vehicle : dealership.getAllVehicles()) {
+                if (vehicle.getVin() == searchedVin) {
+                    vehicleSold = vehicle;
+                    foundVehicle = true;
+                    break;
+                }
+            }
+
+            if (!foundVehicle) {
+                System.out.println("\nVehicle with VIN " + searchedVin + " not found!\n        Please try again.\n");
+            }
+
+            if(foundVehicle){
+                System.out.print("Enter customer full name: ");
+                String customerName = scanner.nextLine().trim();
+                System.out.print("Enter customer email: ");
+                String customerEmail = scanner.nextLine().trim();
+                System.out.print("Enter total price: ");
+                double totalPrice = scanner.nextDouble();
+                scanner.nextLine();
+                System.out.print("Would they like to finance car? (Yes/No): ");
+                String customerFinace = scanner.nextLine().trim();
+                boolean financeOption = (customerFinace.equalsIgnoreCase("Yes") ? true : false);
+
+                SalesContract newSaleContract = new SalesContract(contractDateStamp(), customerName, customerEmail, vehicleSold, financeOption);
+
+                contractDataManager.saveContract(newSaleContract);
+                dealership.removeVehicle(vehicleSold);
+                DealershipFileManager fileManager = new DealershipFileManager();
+                fileManager.saveDealership(dealership);
+            }
+        }
+        System.out.println("\n    *** CONGRATULATIONS ***");
+        System.out.println("==== Vehicle Successfully Sold! ====");
+        System.out.println("Details of the sold vehicle:");
+        System.out.println(vehicleSold);
+    }
+
+
+
+    public void leaseVehicle(Scanner scanner){
+        //Make a new object to get the save contract method
+        ContractDataManager contractDataManager = new ContractDataManager();
+        boolean foundVehicle = false;
+        Vehicle vehicleLeased = null;
+        while (!foundVehicle) {
+            int searchedVin = validateIntInput(scanner, "Please provide the (VIN) for the vehicle to lease: ");
+            scanner.nextLine(); // Consume newline character
+            for (Vehicle vehicle : dealership.getAllVehicles()) {
+                if (vehicle.getVin() == searchedVin) {
+                    vehicleLeased = vehicle;
+                    foundVehicle = true;
+                    break;
+                }
+            }
+
+            if (!foundVehicle) {
+                System.out.println("\nVehicle with VIN " + searchedVin + " not found!\n        Please try again.\n");
+            }
+
+            if(foundVehicle){
+                System.out.print("Enter customer full name: ");
+                String customerName = scanner.nextLine().trim();
+                System.out.print("Enter customer email: ");
+                String customerEmail = scanner.nextLine().trim();
+                System.out.print("Enter total price: ");
+                double totalPrice = scanner.nextDouble();
+                scanner.nextLine();
+
+                LeaseContract newSaleContract = new LeaseContract(contractDateStamp(), customerName, customerEmail, vehicleLeased);
+
+                contractDataManager.saveContract(newSaleContract);
+                dealership.removeVehicle(vehicleLeased);
+                DealershipFileManager fileManager = new DealershipFileManager();
+                fileManager.saveDealership(dealership);
+            }
+        }
+        System.out.println("\n    *** CONGRATULATIONS ***");
+        System.out.println("==== Vehicle Successfully Leased! ====");
+        System.out.println("Details of the leased vehicle:");
+        System.out.println(vehicleLeased);
+
+    }
+
+
+    public String contractDateStamp(){
+        LocalDate currentDate = LocalDate.now();
+        // Format the date as YYYYMMDD
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = currentDate.format(formatter);
+        return formattedDate;
+    }
+
 
     /**
      * Processes a request to add a new vehicle to the dealership's inventory using
