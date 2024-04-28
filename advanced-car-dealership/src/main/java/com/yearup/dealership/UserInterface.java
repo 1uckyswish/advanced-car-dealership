@@ -91,7 +91,7 @@ public class UserInterface {
                     processRemoveVehicleRequest(scanner);
                     break;
                 case "10":
-                  processRecordOfSaleOrLease(scanner);
+                    processRecordOfSaleOrLease(scanner);
                     break;
                 case "11":
                     adminDisplay(scanner);
@@ -297,7 +297,7 @@ public class UserInterface {
         displayVehicles(vehicles);
     }
 
-    private void processRecordOfSaleOrLease(Scanner scanner){
+    private void processRecordOfSaleOrLease(Scanner scanner) {
         System.out.println("\nPlease choose an option: Sell or Lease a vehicle");
         System.out.println("1. Sell");
         System.out.println("2. Lease");
@@ -305,17 +305,22 @@ public class UserInterface {
         // Ask user what option they want.
         System.out.print("Enter your choice: ");
         String option = scanner.nextLine().trim();
-        switch(option){
-            case "1": sellVehicle(scanner);break;
-            case "2": leaseVehicle(scanner);break;
+        switch (option) {
+            case "1":
+                sellVehicle(scanner);
+                break;
+            case "2":
+                leaseVehicle(scanner);
+                break;
             default:
                 System.out.println("\n\nReturning back home....\n\n");
-                display();break;
+                display();
+                break;
         }
     }
 
     private void sellVehicle(Scanner scanner) {
-        //Make a new object to get the save contract method
+        // Make a new object to get the save contract method
         ContractDataManager contractDataManager = new ContractDataManager();
         boolean foundVehicle = false;
         Vehicle vehicleSold = null;
@@ -334,7 +339,7 @@ public class UserInterface {
                 System.out.println("\nVehicle with VIN " + searchedVin + " not found!\n        Please try again.\n");
             }
 
-            if(foundVehicle){
+            if (foundVehicle) {
                 System.out.print("Enter customer full name: ");
                 String customerName = scanner.nextLine().trim();
                 System.out.print("Enter customer email: ");
@@ -342,10 +347,11 @@ public class UserInterface {
                 System.out.print("Would they like to finance car? (Yes/No): ");
                 String customerFinace = scanner.nextLine().trim();
                 boolean financeOption = (customerFinace.equalsIgnoreCase("Yes") ? true : false);
-                //Ask for add ons
+                // Ask for add ons
                 double vehiclePriceWithAddOns = vehicleSold.getPrice() + displayAddOnsMenu(scanner);
                 vehicleSold.setPrice(vehiclePriceWithAddOns);
-                SalesContract newSaleContract = new SalesContract(contractDateStamp(), customerName, customerEmail, vehicleSold, financeOption);
+                SalesContract newSaleContract = new SalesContract(contractDateStamp(), customerName, customerEmail,
+                        vehicleSold, financeOption);
 
                 contractDataManager.saveContract(newSaleContract);
                 dealership.removeVehicle(vehicleSold);
@@ -358,7 +364,6 @@ public class UserInterface {
         System.out.println("Details of the sold vehicle:");
         System.out.println(vehicleSold);
     }
-
 
     private double displayAddOnsMenu(Scanner scanner) {
         System.out.println("Welcome to the Car Add-Ons Menu");
@@ -419,8 +424,8 @@ public class UserInterface {
         }
     }
 
-    private void leaseVehicle(Scanner scanner){
-        //Make a new object to get the save contract method
+    private void leaseVehicle(Scanner scanner) {
+        // Make a new object to get the save contract method
         ContractDataManager contractDataManager = new ContractDataManager();
         boolean foundVehicle = false;
         Vehicle vehicleLeased = null;
@@ -439,13 +444,14 @@ public class UserInterface {
                 System.out.println("\nVehicle with VIN " + searchedVin + " not found!\n        Please try again.\n");
             }
 
-            if(foundVehicle){
+            if (foundVehicle) {
                 System.out.print("Enter customer full name: ");
                 String customerName = scanner.nextLine().trim();
                 System.out.print("Enter customer email: ");
                 String customerEmail = scanner.nextLine().trim();
 
-                LeaseContract newSaleContract = new LeaseContract(contractDateStamp(), customerName, customerEmail, vehicleLeased);
+                LeaseContract newSaleContract = new LeaseContract(contractDateStamp(), customerName, customerEmail,
+                        vehicleLeased);
 
                 contractDataManager.saveContract(newSaleContract);
                 dealership.removeVehicle(vehicleLeased);
@@ -460,15 +466,13 @@ public class UserInterface {
 
     }
 
-
-    private String contractDateStamp(){
+    private String contractDateStamp() {
         LocalDate currentDate = LocalDate.now();
         // Format the date as YYYYMMDD
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String formattedDate = currentDate.format(formatter);
         return formattedDate;
     }
-
 
     /**
      * Processes a request to add a new vehicle to the dealership's inventory using
@@ -561,16 +565,16 @@ public class UserInterface {
         }
     }
 
-    private void adminDisplay(Scanner scanner){
+    private void adminDisplay(Scanner scanner) {
         System.out.println("\nWelcome to the Contract Administration System!\nPlease log in to proceed.");
         System.out.print("Enter your admin username: ");
         String username = scanner.nextLine().trim();
         System.out.print("Enter your admin password: ");
         String password = scanner.nextLine().trim();
-        if(!password.equalsIgnoreCase("ABC123")){
+        if (!password.equalsIgnoreCase("ABC123")) {
             System.out.println("\nIncorrect password. Access denied.");
             System.out.println("Returning back home...\n");
-        }else{
+        } else {
             System.out.println("\nWelcome back, " + username + "!");
             System.out.println("Loading the Contract Administration System...\n");
 
@@ -594,9 +598,6 @@ public class UserInterface {
             }
         }
     }
-
-
-
 
     /**
      * Displays the details of all vehicles in the inventory.

@@ -32,7 +32,7 @@ public class LeaseContract extends Contract {
         double totalPrice = getTotalPrice();
         double interestRate = 0.04; // 4.0%
         int loanTerm = 36; // 36 months
-        //P = (T × r) / (1 - (1 + r)^-n)
+        // P = (T × r) / (1 - (1 + r)^-n)
         return (totalPrice * interestRate) / (1 - Math.pow(1 + interestRate, -loanTerm));
     }
 }

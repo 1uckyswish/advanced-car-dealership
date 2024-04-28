@@ -61,52 +61,52 @@ public class ContractDataManager {
         }
     }
 
-    public List<String> getAllContracts(){
+    public List<String> getAllContracts() {
         List<String> contracts = new ArrayList<>();
-        try{
+        try {
             BufferedReader reader = new BufferedReader(new FileReader("contracts.csv"));
             String line;
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 contracts.add(line);
             }
             reader.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return contracts;
     }
 
-    public List<String> getSaleContracts(){
+    public List<String> getSaleContracts() {
         List<String> contracts = new ArrayList<>();
-        try{
+        try {
             BufferedReader reader = new BufferedReader(new FileReader("contracts.csv"));
             String line;
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(Pattern.quote("|"));
-                if(fields[0].equalsIgnoreCase("SALE")){
+                if (fields[0].equalsIgnoreCase("SALE")) {
                     contracts.add(line);
                 }
             }
             reader.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return contracts;
     }
 
-    public List<String> getLeaseContracts(){
+    public List<String> getLeaseContracts() {
         List<String> contracts = new ArrayList<>();
-        try{
+        try {
             BufferedReader reader = new BufferedReader(new FileReader("contracts.csv"));
             String line;
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(Pattern.quote("|"));
-                if(fields[0].equalsIgnoreCase("LEASE")){
+                if (fields[0].equalsIgnoreCase("LEASE")) {
                     contracts.add(line);
                 }
             }
             reader.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return contracts;

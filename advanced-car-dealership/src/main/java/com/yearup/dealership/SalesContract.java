@@ -46,7 +46,7 @@ public class SalesContract extends Contract {
             double totalPrice = getTotalPrice();
             double interestRate = (totalPrice >= 10000) ? 0.0425 : 0.0525;
             int loanTerm = (totalPrice >= 10000) ? 48 : 24;
-            //P = (T × r) / (1 - (1 + r)^-n)
+            // P = (T × r) / (1 - (1 + r)^-n)
             return (totalPrice * interestRate) / (1 - Math.pow(1 + interestRate, -loanTerm));
         } else {
             return 0;
