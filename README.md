@@ -33,7 +33,7 @@ This is the heart of our Javazon Online Store project. The Main class manages al
 
 This is the main screen of the Javazon Online Store interface, offering users a variety of options to explore.
 
-![Screenshot 2024-04-24 at 11 04 47 AM](https://github.com/1uckyswish/car-dealership/assets/107442415/de57445f-92e8-4139-b7fc-9d07b8b74b15)
+<img width="1440" alt="Screenshot 2024-04-27 at 8 49 52 PM" src="https://github.com/1uckyswish/advanced-car-dealership/assets/107442415/ba7a2fb1-194c-4cd0-a509-e344f95ac338">
 
 ## Option 1: Filter Vehicles by Price:
 
