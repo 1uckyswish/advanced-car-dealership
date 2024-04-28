@@ -1,8 +1,13 @@
 package com.yearup.dealership;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class ContractDataManager {
 
@@ -54,5 +59,56 @@ public class ContractDataManager {
         } catch (Exception e) {
             e.printStackTrace(); // Print stack trace for any exception
         }
+    }
+
+    public List<String> getAllContracts(){
+        List<String> contracts = new ArrayList<>();
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader("contracts.csv"));
+            String line;
+            while((line = reader.readLine()) != null){
+                contracts.add(line);
+            }
+            reader.close();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return contracts;
+    }
+
+    public List<String> getSaleContracts(){
+        List<String> contracts = new ArrayList<>();
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader("contracts.csv"));
+            String line;
+            while((line = reader.readLine()) != null){
+                String[] fields = line.split(Pattern.quote("|"));
+                if(fields[0].equalsIgnoreCase("SALE")){
+                    contracts.add(line);
+                }
+            }
+            reader.close();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return contracts;
+    }
+
+    public List<String> getLeaseContracts(){
+        List<String> contracts = new ArrayList<>();
+        try{
+            BufferedReader reader = new BufferedReader(new FileReader("contracts.csv"));
+            String line;
+            while((line = reader.readLine()) != null){
+                String[] fields = line.split(Pattern.quote("|"));
+                if(fields[0].equalsIgnoreCase("LEASE")){
+                    contracts.add(line);
+                }
+            }
+            reader.close();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return contracts;
     }
 }
