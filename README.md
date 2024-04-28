@@ -1,12 +1,33 @@
-# Java Car Dealership 
+# Advanced Java Car Dealership
 
-JavaCar Dealership is a user-friendly console-based application tailored for sales professionals and managers in a car dealership environment. It's designed to streamline the car purchasing experience by providing intuitive functionalities for managing inventory and assisting customers. This project is a comprehensive dealership application that empowers users to efficiently perform various operations, enhancing the overall workflow. The application offers essential features such as finding vehicles within specified criteria, listing all vehicles, adding or removing vehicles, and quitting the application. The vehicles in the inventory will be stored in a pipe-delimited file, requiring updates for any modifications to maintain consistency.
+Advanced Java Car Dealership is a user-friendly console-based application tailored for sales professionals and managers in a car dealership environment. It's designed to streamline the car purchasing experience by providing intuitive functionalities for managing inventory and assisting customers. This project is a comprehensive dealership application that empowers users to efficiently perform various operations, enhancing the overall workflow. The application offers essential features such as finding vehicles within specified criteria, listing all vehicles, adding or removing vehicles, and quitting the application. The vehicles in the inventory will be stored in a pipe-delimited file, requiring updates for any modifications to maintain consistency.
+
+### Pillars of OOP in JavaCar Dealership:
+
+- **Encapsulation**:
+  - Data and methods are encapsulated within classes for vehicle and inventory management.
+  - Shields internal details, promoting modularity and ease of maintenance.
+  - Ensures data integrity and prevents unauthorized access or modification.
+
+- **Polymorphism**:
+  - Treats various vehicle types uniformly through inheritance and method overriding.
+  - Enables seamless interaction with diverse vehicle models and functionalities.
+  - Facilitates code reuse and enhances user experience.
+
+- **Abstraction**:
+  - Hides complex implementation details behind simplified interfaces.
+  - Users interact through intuitive commands without needing to understand underlying complexities.
+  - Fosters clarity, reduces cognitive load, and supports future modifications.
+
+- **Inheritance**:
+  - Establishes relationships between vehicle types using superclass and subclasses.
+  - Enables sharing of attributes and behaviors while allowing specialization when needed.
 
 ## Main Class (Home)
 
 This is the heart of our Javazon Online Store project. The Main class manages all store functionalities. Check out the Maven Java folder structure on the left to see how the project is organized.
 
-![Screenshot 2024-04-24 at 10 51 16 AM](https://github.com/1uckyswish/car-dealership/assets/107442415/23ce2e41-07af-4fcf-9d15-ee13bd10a83a)
+<img width="1440" alt="Screenshot 2024-04-27 at 8 44 10 PM" src="https://github.com/1uckyswish/advanced-car-dealership/assets/107442415/4d9eef4f-01a4-4420-8278-36f292d5a995">
 
 ## Start of Program
 
@@ -85,10 +106,9 @@ Verify the data type entered by the user using the scanner for each input. If th
 
 
 ## Interesting Section of code
-### This part of my code is interesting because, after some reading, understanding, and research, I discovered the concept of utility methods, which can be utilized throughout the program. These utility methods, particularly for type checking, have been beneficial. Whenever the user inputs data using the scanner, these methods ensure that the input is in the correct format. This enhances the reliability and robustness of the program, as it prevents errors caused by incorrect user inputs.
+ In this section of the code, users have the option to add addons to the vehicle they are purchasing. Just like in a real dealership, when you buy a car, you typically only add one addon of each type. For example, you wouldn't add two GPS systems or two backup cameras to your vehicle, right? To emulate this behavior, I've implemented a check to ensure that users can only add each addon once. If a user attempts to add an addon that has already been selected, they will be notified that the addon cannot be added again. This ensures that users can only add each addon once. Once the user has selected all the addons they want, the total cost of the addons is applied to the total price of the car
 
-
-![Screenshot 2024-04-24 at 11 52 43 AM](https://github.com/1uckyswish/car-dealership/assets/107442415/7ddcf017-a00f-4083-97cb-068e73aea010)
+<img width="1440" alt="Screenshot 2024-04-27 at 8 44 47 PM" src="https://github.com/1uckyswish/advanced-car-dealership/assets/107442415/9cffbb38-fa8b-4d48-9269-1364c4b0a6fd">
 
 
 
