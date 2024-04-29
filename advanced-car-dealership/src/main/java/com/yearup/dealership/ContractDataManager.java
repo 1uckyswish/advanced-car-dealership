@@ -13,12 +13,15 @@ public class ContractDataManager {
 
     public static void saveContract(Contract contract) {
         try {
+            // Instantiate a reader with the CSV we read from
             BufferedWriter writer = new BufferedWriter(new FileWriter("contracts.csv", true));
             DecimalFormat df = new DecimalFormat("0.00"); // Pattern for two decimal places
-
+            //Check if the contract passed is of Sales
             if (contract instanceof SalesContract) {
+                //Downcast the object to get all methods from SalesContract
                 SalesContract salesContract = (SalesContract) contract;
-                writer.write("\nSALE|" + salesContract.getContractDate() + "|" +
+                //Write to CSV to hold all data from the contract
+                writer.write("SALE|" + salesContract.getContractDate() + "|" +
                         salesContract.getCustomerName() + "|" +
                         salesContract.getCustomerEmail() + "|" +
                         salesContract.getVehicleSold().getVin() + "|" +
@@ -34,11 +37,15 @@ public class ContractDataManager {
                         df.format(salesContract.getRecordingFee()) + "|" +
                         df.format(salesContract.getProcessingFee()) + "|" +
                         (salesContract.isFinanceOption() ? "YES" : "NO") + "|" +
-                        df.format(salesContract.getMonthlyPayment()) + "\n");
+                        df.format(salesContract.getMonthlyPayment()));
+                writer.newLine();
                 writer.flush();
+                //Check if the contract passed is of lease
             } else if (contract instanceof LeaseContract) {
+                //Downcast the object to get all methods from LeaseContract
                 LeaseContract leaseContract = (LeaseContract) contract;
-                writer.write("\nLEASE|" + leaseContract.getContractDate() + "|" +
+                //Write to CSV to hold all data from the contract
+                writer.write("LEASE|" + leaseContract.getContractDate() + "|" +
                         leaseContract.getCustomerName() + "|" +
                         leaseContract.getCustomerEmail() + "|" +
                         leaseContract.getVehicleSold().getVin() + "|" +
@@ -61,6 +68,10 @@ public class ContractDataManager {
         }
     }
 
+    /**
+     * Retrieves all contracts from the contracts file and returns them as a list of strings.
+     * @return A list containing all contracts.
+     */
     public List<String> getAllContracts() {
         List<String> contracts = new ArrayList<>();
         try {
@@ -76,6 +87,10 @@ public class ContractDataManager {
         return contracts;
     }
 
+    /**
+     * Retrieves all sale contracts from the contracts file and returns them as a list of strings.
+     * @return A list containing all sale contracts.
+     */
     public List<String> getSaleContracts() {
         List<String> contracts = new ArrayList<>();
         try {
@@ -94,6 +109,10 @@ public class ContractDataManager {
         return contracts;
     }
 
+    /**
+     * Retrieves all lease contracts from the contracts file and returns them as a list of strings.
+     * @return A list containing all lease contracts.
+     */
     public List<String> getLeaseContracts() {
         List<String> contracts = new ArrayList<>();
         try {
@@ -111,4 +130,5 @@ public class ContractDataManager {
         }
         return contracts;
     }
+
 }

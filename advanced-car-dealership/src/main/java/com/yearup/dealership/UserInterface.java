@@ -1,9 +1,9 @@
 package com.yearup.dealership;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import static com.yearup.dealership.UtilityMethods.UtilityMethods.*;
 
 /**
  * This class represents the user interface for interacting with the dealership
@@ -297,6 +297,11 @@ public class UserInterface {
         displayVehicles(vehicles);
     }
 
+    /**
+     * This method provides the user with an interface to select between selling or leasing a vehicle.
+     * It calls a method corresponding to the selected option.
+     * If no option is selected, it will return home.
+     */
     private void processRecordOfSaleOrLease(Scanner scanner) {
         System.out.println("\nPlease choose an option: Sell or Lease a vehicle");
         System.out.println("1. Sell");
@@ -304,67 +309,93 @@ public class UserInterface {
         System.out.println("Else. Go Home");
         // Ask user what option they want.
         System.out.print("Enter your choice: ");
+        //take user option and trim spaces
         String option = scanner.nextLine().trim();
         switch (option) {
             case "1":
+                //Calls the method that allows user to input customer info to sell vehicle
                 sellVehicle(scanner);
                 break;
             case "2":
+                //Calls the method that allows user to input customer info to lease vehicle
                 leaseVehicle(scanner);
                 break;
             default:
+                //Calls the main home screen method when user chooses the wrong option
                 System.out.println("\n\nReturning back home....\n\n");
                 display();
                 break;
         }
     }
 
+    /**
+     * This method takes user input to insert customer information to sell a vehicle and write it to the contract.
+     * @param scanner The scanner object used to read user input.
+     */
     private void sellVehicle(Scanner scanner) {
         // Make a new object to get the save contract method
-        ContractDataManager contractDataManager = new ContractDataManager();
+        //use a boolean flag to check if the vehicle user finds is within the inventory
         boolean foundVehicle = false;
+        // Instantiate a Vehicle object and set it to null as we will update its value
         Vehicle vehicleSold = null;
+        //Use a while loop to until the vehicle is found with its VIN
         while (!foundVehicle) {
+            //Get user input and validate that it is an Integer
             int searchedVin = validateIntInput(scanner, "Please provide the (VIN) for the vehicle you are selling: ");
             scanner.nextLine(); // Consume newline character
+            //Loop through the inventory and check if any vehicle inside it has the VIN user inputted
             for (Vehicle vehicle : dealership.getAllVehicles()) {
                 if (vehicle.getVin() == searchedVin) {
+                    //set the vehicle found to the Object instantiation
                     vehicleSold = vehicle;
+                    //Update a boolean flag
                     foundVehicle = true;
+                    //Once found, break out the loop
                     break;
                 }
             }
-
+            //If vehicle is not found return an error message
             if (!foundVehicle) {
                 System.out.println("\nVehicle with VIN " + searchedVin + " not found!\n        Please try again.\n");
             }
-
+            //If vehicle is found return the options for the user to fill out
             if (foundVehicle) {
                 System.out.print("Enter customer full name: ");
                 String customerName = scanner.nextLine().trim();
                 System.out.print("Enter customer email: ");
                 String customerEmail = scanner.nextLine().trim();
                 System.out.print("Would they like to finance car? (Yes/No): ");
-                String customerFinace = scanner.nextLine().trim();
-                boolean financeOption = (customerFinace.equalsIgnoreCase("Yes") ? true : false);
-                // Ask for add ons
-                double vehiclePriceWithAddOns = vehicleSold.getPrice() + displayAddOnsMenu(scanner);
+                String customerFinance = scanner.nextLine().trim();
+                boolean financeOption = (customerFinance.equalsIgnoreCase("Yes"));
+                // Ask the user if they would like add-ons
+                double addOnCost = displayAddOnsMenu(scanner);
+                // add the cost of add-ons with the vehicle price
+                double vehiclePriceWithAddOns = vehicleSold.getPrice() + addOnCost;
+                //update the vehicle cost using its setter
                 vehicleSold.setPrice(vehiclePriceWithAddOns);
-                SalesContract newSaleContract = new SalesContract(contractDateStamp(), customerName, customerEmail,
-                        vehicleSold, financeOption);
-
-                contractDataManager.saveContract(newSaleContract);
+                //Instantiate a new salesContract object to save all fields
+                SalesContract newSaleContract = new SalesContract(contractDateStamp(), customerName, customerEmail, vehicleSold, financeOption);
+                //Send it to the contract save contract to write a new contract into docs
+                ContractDataManager.saveContract(newSaleContract);
+                //Remove sold vehicle from inventory
                 dealership.removeVehicle(vehicleSold);
+                //Instantiate a fileManager to save update the current inventory to the inventory.csv
                 DealershipFileManager fileManager = new DealershipFileManager();
+                //Call the method to save the dealership
                 fileManager.saveDealership(dealership);
             }
         }
+        //Print out a nice message to user
         System.out.println("\n    *** CONGRATULATIONS ***");
         System.out.println("==== Vehicle Successfully Sold! ====");
         System.out.println("Details of the sold vehicle:");
         System.out.println(vehicleSold);
     }
 
+    /**
+     * Displays a message to the user presenting add-on options they can choose from, with corresponding costs displayed next to each option.
+     * @param scanner The scanner object used to read user input.
+     */
     private double displayAddOnsMenu(Scanner scanner) {
         System.out.println("Welcome to the Car Add-Ons Menu");
         System.out.println("1. GPS Navigation System ($200)");
@@ -377,13 +408,26 @@ public class UserInterface {
 
         // Initialize an array to keep track of add-on selections
         boolean[] addOnSelected = new boolean[7];
-
+        //Variable to hold all added ons cost
         double totalAddOnPrice = 0;
 
+        //Within a loop ask the user to keep selecting options to add on unless they press 0 (exits)
         while (true) {
             System.out.print("Enter the number of the add-on you'd like to include (0 to exit): ");
-            int addOnSelection = scanner.nextInt();
-            scanner.nextLine(); // Consume newline character
+            int addOnSelection;
+            try {
+                addOnSelection = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character
+
+                if (addOnSelection < 0 || addOnSelection > 6) {
+                    System.out.println("Invalid add-on selection. Please enter a number between 0 and 6.");
+                    continue;
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next(); // Clear the invalid input
+                continue;
+            }
 
             if (addOnSelection == 0) {
                 return totalAddOnPrice; // Return the total add-on price
@@ -418,47 +462,59 @@ public class UserInterface {
                 case 6:
                     totalAddOnPrice += 150;
                     break;
-                default:
-                    System.out.println("Invalid add-on selection. Please try again.");
             }
         }
     }
 
+    /**
+     * This method takes user input to insert customer information to lease a vehicle and write it to the contract.
+     * @param scanner The scanner object used to read user input.
+     */
     private void leaseVehicle(Scanner scanner) {
         // Make a new object to get the save contract method
-        ContractDataManager contractDataManager = new ContractDataManager();
+        //use a boolean flag to check if the vehicle user finds is within the inventory
         boolean foundVehicle = false;
+        // Instantiate a Vehicle object and set it to null as we will update its value
         Vehicle vehicleLeased = null;
+        //Use a while loop to until the vehicle is found with its VIN
         while (!foundVehicle) {
+            //Get user input and validate that it is an Integer
             int searchedVin = validateIntInput(scanner, "Please provide the (VIN) for the vehicle to lease: ");
             scanner.nextLine(); // Consume newline character
+            //Loop through the inventory and check if any vehicle inside it has the VIN user inputted
             for (Vehicle vehicle : dealership.getAllVehicles()) {
                 if (vehicle.getVin() == searchedVin) {
+                    //set the vehicle found to the Object instantiation
                     vehicleLeased = vehicle;
+                    //Update a boolean flag
                     foundVehicle = true;
+                    //Once found, break out the loop
                     break;
                 }
             }
-
+            //If vehicle is not found return an error message
             if (!foundVehicle) {
                 System.out.println("\nVehicle with VIN " + searchedVin + " not found!\n        Please try again.\n");
             }
-
+            //If vehicle is found return the options for the user to fill out
             if (foundVehicle) {
                 System.out.print("Enter customer full name: ");
                 String customerName = scanner.nextLine().trim();
                 System.out.print("Enter customer email: ");
                 String customerEmail = scanner.nextLine().trim();
-
-                LeaseContract newSaleContract = new LeaseContract(contractDateStamp(), customerName, customerEmail,
-                        vehicleLeased);
-
-                contractDataManager.saveContract(newSaleContract);
+                //Instantiate a new LeaseContract object to save all fields
+                LeaseContract newSaleContract = new LeaseContract(contractDateStamp(), customerName, customerEmail, vehicleLeased);
+                //Send it to the contract save contract to write a new contract into docs
+                ContractDataManager.saveContract(newSaleContract);
+                //Remove lease vehicle from inventory
                 dealership.removeVehicle(vehicleLeased);
+                //Instantiate a fileManager to save update the current inventory to the inventory.csv
                 DealershipFileManager fileManager = new DealershipFileManager();
+                //Call the method to save the dealership
                 fileManager.saveDealership(dealership);
             }
         }
+        //Print out a nice message to user
         System.out.println("\n    *** CONGRATULATIONS ***");
         System.out.println("==== Vehicle Successfully Leased! ====");
         System.out.println("Details of the leased vehicle:");
@@ -466,13 +522,6 @@ public class UserInterface {
 
     }
 
-    private String contractDateStamp() {
-        LocalDate currentDate = LocalDate.now();
-        // Format the date as YYYYMMDD
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String formattedDate = currentDate.format(formatter);
-        return formattedDate;
-    }
 
     /**
      * Processes a request to add a new vehicle to the dealership's inventory using
@@ -561,11 +610,18 @@ public class UserInterface {
             System.out.println(temporaryVehicle);
             // Save the updated dealership after removing the vehicle
             DealershipFileManager fileManager = new DealershipFileManager();
+            // Vehicle is added to the CSV
             fileManager.saveDealership(dealership);
         }
     }
 
+    /**
+     * Displays a login screen for accessing the admin interface.
+     * Users are prompted to enter a username and password.
+     * @param scanner The scanner object used to read user input.
+     */
     private void adminDisplay(Scanner scanner) {
+        //Greet user and collect login info
         System.out.println("\nWelcome to the Contract Administration System!\nPlease log in to proceed.");
         System.out.print("Enter your admin username: ");
         String username = scanner.nextLine().trim();
@@ -578,6 +634,7 @@ public class UserInterface {
             System.out.println("\nWelcome back, " + username + "!");
             System.out.println("Loading the Contract Administration System...\n");
 
+            //Instantiate an admin Object to access the method to display the options to choose from
             AdminUserInterface admin = new AdminUserInterface(new ContractDataManager());
             admin.display();
             String choice = scanner.nextLine().trim();
@@ -612,100 +669,4 @@ public class UserInterface {
             System.out.println(vehicle);
         }
     }
-
-    /**
-     * Validates user input to ensure it is an integer.
-     * Prompts the user with the given message until a valid integer is entered.
-     *
-     * @param scanner The Scanner object used to read user input
-     * @param prompt  The message prompting the user to enter an integer
-     * @return The valid integer entered by the user
-     */
-    private int validateIntInput(Scanner scanner, String prompt) {
-        // Set a starter value to use for returning
-        int input;
-        // Use a while loop to keep prompting till it breaks out the loop
-        while (true) {
-            // Print out the question for user to respond to
-            System.out.print(prompt);
-            // If the scanner notices its asking for an Int, and it feeds it, then apply it
-            // to the variable
-            if (scanner.hasNextInt()) {
-                input = scanner.nextInt();
-                // Break out the loop when it matches
-                break;
-            } else {
-                // If user types something else then Int it will alert the user
-                System.out.println("\n==== Sorry, that input is invalid. Please enter a valid numeric value ===\n");
-                scanner.next(); // Consume invalid input
-            }
-        }
-        // return the user input
-        return input;
-    }
-
-    /**
-     * Validates user input to ensure it is a non-empty string.
-     * Prompts the user with the given message until a valid non-empty string is
-     * entered.
-     *
-     * @param scanner The Scanner object used to read user input
-     * @param prompt  The message prompting the user to enter a string
-     * @return The valid non-empty string entered by the user
-     */
-    private String validateStringInput(Scanner scanner, String prompt) {
-        // Set a starter value to use for returning
-        String input;
-        // Use a while loop to keep prompting till it breaks out the loop
-        while (true) {
-            // Print out the question for user to respond to
-            System.out.print(prompt);
-            // If the scanner notices its asking for a String, and it feeds it, then apply
-            // it to the variable
-            if (scanner.hasNextLine()) {
-                // Break out the loop when it matches
-                input = scanner.nextLine().trim();
-                if (!input.isEmpty()) {
-                    break;
-                }
-            }
-            // If user types something else then Int it will alert the user
-            System.out.println("\n==== Sorry, that input is invalid. Please enter a valid non-empty string ===\n");
-        }
-        // return the user input
-        return input;
-    }
-
-    /**
-     * Validates user input to ensure it is a valid double value.
-     * Prompts the user with the given message until a valid double value is
-     * entered.
-     *
-     * @param scanner The Scanner object used to read user input
-     * @param prompt  The message prompting the user to enter a double value
-     * @return The valid double value entered by the user
-     */
-    private double validateDoubleInput(Scanner scanner, String prompt) {
-        // Set a starter value to use for returning
-        double input;
-        // Use a while loop to keep prompting till it breaks out the loop
-        while (true) {
-            // Print out the question for user to respond to
-            System.out.print(prompt);
-            // If the scanner notices its asking for a Double, and it feeds it, then apply
-            // it to the variable
-            if (scanner.hasNextDouble()) {
-                // Break out the loop when it matches
-                input = scanner.nextDouble();
-                break;
-            } else {
-                // If user types something else then Int it will alert the user
-                System.out.println("\n==== Sorry, that input is invalid. Please enter a valid numeric value ===\n");
-                scanner.next(); // Consume invalid input
-            }
-        }
-        // return the user input
-        return input;
-    }
-
 }
