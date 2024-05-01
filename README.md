@@ -25,13 +25,13 @@ Advanced Java Car Dealership is a user-friendly console-based application tailor
 
 ## Main Class (Home)
 
-This is the heart of our Javazon Online Store project. The Main class manages all store functionalities. Check out the Maven Java folder structure on the left to see how the project is organized.
+This is the heart of our Java Car Dealership project. The Main class manages all store functionalities. Check out the Maven Java folder structure on the left to see how the project is organized.
 
 <img width="1440" alt="Screenshot 2024-04-27 at 8 44 10 PM" src="https://github.com/1uckyswish/advanced-car-dealership/assets/107442415/4d9eef4f-01a4-4420-8278-36f292d5a995">
 
 ## Start of Program
 
-This is the main screen of the Javazon Online Store interface, offering users a variety of options to explore.
+This is the main screen of the Java Car Dealership interface, offering users a variety of options to explore.
 
 <img width="1440" alt="Screenshot 2024-04-27 at 8 49 52 PM" src="https://github.com/1uckyswish/advanced-car-dealership/assets/107442415/ba7a2fb1-194c-4cd0-a509-e344f95ac338">
 
